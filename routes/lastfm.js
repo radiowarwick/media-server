@@ -3,13 +3,12 @@ const CronJob = require("cron").CronJob;
 const crypto = require("crypto");
 const axios = require("axios");
 const fs = require("fs-extra");
+const config = require("../config");
 
 const imagemin = require("imagemin");
 const imageminPngquant = require("imagemin-pngquant");
 
 const router = new koaRouter();
-
-const apiKey = "e72f5e5eecceffa65784e10d18cfc5a5";
 
 const endpoints = {
   artist: "http://ws.audioscrobbler.com/2.0/?method=artist.getinfo&format=json",
@@ -42,7 +41,7 @@ router.get("/artist/:artist", async ctx => {
    */
   if (!exists) {
     const response = await axios.get(endpoints.artist, {
-      params: { artist: artist, api_key: apiKey }
+      params: { artist: artist, api_key: config.LASTFM_API_KEY }
     });
 
     /**
@@ -113,7 +112,7 @@ router.get("/track/:artist/:track", async ctx => {
    */
   if (!exists) {
     const response = await axios.get(endpoints.track, {
-      params: { artist: artist, track: track, api_key: apiKey }
+      params: { artist: artist, track: track, api_key: config.LASTFM_API_KEY }
     });
 
     /**
