@@ -55,3 +55,13 @@ Returns a video base on the filename appended by `.mp4`.
 
 Example:
 `request(/video/timelapse.mp4);` will return a video with filename 'timelapse'.
+
+## LastFM Integration Notes
+
+This server maintains a cache of images from LastFM that is perodically pruned to ensure the most up to date images are served without having to query LastFM every request. 
+
+Using the artist and track strings, a hash is generated. Then, the server checks if there is an image file with a filename that matches the hash. If so, it serves the image from disk. Else, it will ask LastFM for an image URL, download it, and save it with a filename that matches the hash from before. 
+
+Next visit, the cached image will be served.
+
+There is a also file pruner (which runs every day at midnight) which deletes files older than 14 days.
