@@ -3,10 +3,9 @@ const CronJob = require("cron").CronJob;
 const crypto = require("crypto");
 const axios = require("axios");
 const fs = require("fs-extra");
-const config = require("../config");
 
-const imagemin = require("imagemin");
-const imageminPngquant = require("imagemin-pngquant");
+const config = require("../config");
+const utils = require("../utils");
 
 const router = new koaRouter();
 
@@ -28,7 +27,7 @@ router.get("/artist/:artist", async ctx => {
   /**
    * A boolean value which determines if the image for the artist exists in our local disk.
    */
-  const exists = await fs.pathExists("./media/artist/" + hash + ".png");
+  const exists = await fs.pathExists("./media/lastfm/artist/" + hash + ".png");
 
   /**
    * The base filename. Hopefully it will get overwritten. If not, a default image will be served.
@@ -67,7 +66,7 @@ router.get("/artist/:artist", async ctx => {
         /**
          * Save the artist image to local disk.
          */
-        await saveImage(imgURL, "./media/artist/", filename, exists);
+        await saveImage(imgURL, "./media/lastfm/artist/", filename, exists);
       }
     }
   } else {
@@ -81,8 +80,7 @@ router.get("/artist/:artist", async ctx => {
    * Serve the artist image.
    */
   ctx.set("Content-Type", "image/png");
-  ctx.set("Cache-Control", "max-age=1209600");
-  ctx.body = await fs.readFile("./media/artist/" + filename);
+  ctx.body = await fs.readFile("./media/lastfm/artist/" + filename);
 });
 
 /**
@@ -99,7 +97,7 @@ router.get("/track/:artist/:track", async ctx => {
   /**
    * A boolean value which determines if the image for the track exists in our local disk.
    */
-  const exists = await fs.pathExists("./media/track/" + hash + ".png");
+  const exists = await fs.pathExists("./media/lastfm/track/" + hash + ".png");
 
   /**
    * The base filename. Hopefully it will get overwritten. If not, a default image will be served.
@@ -138,7 +136,7 @@ router.get("/track/:artist/:track", async ctx => {
         /**
          * Save the track image to local disk.
          */
-        await saveImage(imgURL, "./media/track/", filename, exists);
+        await saveImage(imgURL, "./media/lastfm/track/", filename, exists);
       }
     }
   } else {
@@ -152,8 +150,7 @@ router.get("/track/:artist/:track", async ctx => {
    * Serve the track image.
    */
   ctx.set("Content-Type", "image/png");
-  ctx.set("Cache-Control", "max-age=1209600");
-  ctx.body = await fs.readFile("./media/track/" + filename);
+  ctx.body = await fs.readFile("./media/lastfm/track/" + filename);
 });
 
 /**
@@ -236,9 +233,7 @@ const saveImage = async (imgURL, dir, filename, exists) => {
       /**
        * Compresses the recieved png, roughly quartering the file size.
        */
-      await imagemin([path], dir, {
-        plugins: [imageminPngquant({ quality: [0.6, 0.8] })]
-      });
+      await utils.compressPNG(path, dir);
       resolve();
     });
     writer.on("error", reject);
@@ -252,7 +247,7 @@ const pruner = new CronJob("0 0 0 * * *", async () => {
   /**
    * Defines the directories to search in.
    */
-  const dirs = ["./media/artist/", "./media/track/"];
+  const dirs = ["./media/lastfm/artist/", "./media/lastfm/track/"];
 
   /**
    * For each directory, fetch the images within it.

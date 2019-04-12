@@ -1,8 +1,9 @@
 const Koa = require("koa");
-const static = require("koa-static");
 const mount = require("koa-mount");
 const compress = require("koa-compress");
 const lastfm = require("./routes/lastfm");
+const static = require("./routes/static");
+const describe = require("./routes/describe");
 
 const app = new Koa();
 
@@ -32,16 +33,23 @@ app.use(
 );
 
 /**
- * Mount routes.
- * - Lastfm uses a custom router.
+ * Add a max-age of 14 days for all content. Allows for browser caching.
+ */
+app.use(async (ctx, next) => {
+  await next();
+  ctx.set("Cache-Control", "max-age=1209600");
+});
+
+/**
+ * Define routes
+ * - Lastfm uses a caching router.
  * - Exec is static.
  * - Video is static.
  * - Shows is static.
  */
 app.use(mount("/lastfm", lastfm.router.routes()));
-app.use(mount("/exec", static("./media/exec/")));
-app.use(mount("/video", static("./media/video/")));
-app.use(mount("/shows", static("./media/shows/")));
+app.use(mount("/static", static.router.routes()));
+app.use(mount("/describe", describe.router.routes()));
 
 /**
  * Start the lastFM image cache pruner.
