@@ -58,6 +58,15 @@ Returns show's cover image based on the show's ID.
 Example:
 `request(static/shows/5010);` will return an image for show with show ID '5010'.
 
+### /static/marketing/:filename
+
+Returns a marketing image based on the filename.
+
+`:filename can be any valid filename`
+
+Example:
+`request(/static/marketing/varsity);` will return an image for the varsity marketing campain.
+
 ### /static/video/:filename
 
 Returns a video based on the filename.
