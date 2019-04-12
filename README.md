@@ -5,7 +5,9 @@ A media server for all the many media outlets at RAW1251AM.
 All images are returned as Portable Network Graphics (a browser's favorite), and all videos as MP4s.
 
 _NOTE, for all endpoints, file type is not required at the end of the request._
+
 Yes: `request(static/exec/whall)` <- File is determined dynamically. Super!
+
 NO: `request(static/exec/whall.png)` <- Don't put PNG! No! Stop!
 
 _NOTE AGAIN, all other filetypes (jpg, mov) simply won't be served. We are strict about this._
