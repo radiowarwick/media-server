@@ -29,7 +29,7 @@ Returns an image for a given artist (if found) or else a default placeholder ima
 `:artist` can be any URI encoded string.
 
 Example:
-`request(/lastfm/artist/tame%20impala);` will return an artist image for 'Tame Impala'.
+`request(/music/artist/tame%20impala);` will return an artist image for 'Tame Impala'.
 
 ### /music/track/:artist/:title
 
@@ -38,7 +38,7 @@ Returns a track image for a given artist and title (if found) or else the artist
 `:artist` and `:title` can be any URI encoded string.
 
 Example:
-`request(/lastfm/track/tame%20impala/pateince);` will return an album art image for the track titled 'Pateince' by 'Tame Impala'.
+`request(/music/track/tame%20impala/pateince);` will return an album art image for the track titled 'Pateince' by 'Tame Impala'.
 
 ### /static/exec/:username
 
