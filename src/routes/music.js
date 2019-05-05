@@ -286,7 +286,7 @@ const pruner = new CronJob("0 0 0 * * *", async () => {
   /**
    * Defines the directories to search in.
    */
-  const dirs = ["./media/lastfm/artist/", "./media/lastfm/track/"];
+  const dirs = ["./media/music/artist/", "./media/music/track/"];
 
   /**
    * For each directory, fetch the images within it.
@@ -300,7 +300,7 @@ const pruner = new CronJob("0 0 0 * * *", async () => {
      * Will not delete the default images.
      */
     images.forEach(async image => {
-      if (image !== "default.png") {
+      if (image !== "default.jpg") {
         await fs.stat(dir + image, async (err, stats) => {
           if (!err) {
             if (stats.birthtimeMs + 1209600000 < Date.now()) {
