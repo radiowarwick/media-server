@@ -1,3 +1,3 @@
 module.exports = {
-  LASTFM_API_KEY: process.env.LASTFM_API_KEY || ""
+  DISCOGS_API_KEY: process.env.DISCOGS_API_KEY || ""
 };

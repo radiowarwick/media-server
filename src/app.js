@@ -1,7 +1,7 @@
 const Koa = require("koa");
 const mount = require("koa-mount");
 const compress = require("koa-compress");
-const lastfm = require("./routes/lastfm");
+const music = require("./routes/music");
 const static = require("./routes/static");
 const describe = require("./routes/describe");
 
@@ -23,10 +23,11 @@ app.use(async (ctx, next) => {
 });
 
 /**
- * Compress all compressable responses over 2KB.
+ * Compress all compressable responses over 2KB. This is includes JPEGs and MP4s
  */
 app.use(
   compress({
+    filter: type => type === "image/jpeg" || "video/mp4",
     threshold: 2048,
     flush: require("zlib").Z_SYNC_FLUSH
   })
@@ -42,18 +43,17 @@ app.use(async (ctx, next) => {
 
 /**
  * Define routes
- * - Lastfm uses a caching router.
- * - Exec is static.
- * - Video is static.
- * - Shows is static.
+ * - Music uses a cacheable router.
+ * - Static is, well, static.
+ * - Describe tells us about the avaliable media.
  */
-app.use(mount("/lastfm", lastfm.router.routes()));
+app.use(mount("/music", music.router.routes()));
 app.use(mount("/static", static.router.routes()));
 app.use(mount("/describe", describe.router.routes()));
 
 /**
- * Start the lastFM image cache pruner.
+ * Start the music image cache pruner.
  */
-lastfm.pruner.start();
+music.pruner.start();
 
 module.exports = app;
