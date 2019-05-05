@@ -5,20 +5,20 @@ const router = new koaRouter();
 
 /**
  * Returns exec images (if found) or default.
- * Enforces PNG filetype.
+ * Enforces JPEG filetype.
  */
 router.get("/exec/:username", async ctx => {
-  ctx.set("Content-Type", "image/png");
-  ctx.body = await resolve("./media/static/exec", ctx.params.username, "png");
+  ctx.set("Content-Type", "image/jpeg");
+  ctx.body = await resolve("./media/static/exec", ctx.params.username, "jpg");
 });
 
 /**
  * Returns show images (if found) or default.
- * Enforces PNG filetype.
+ * Enforces jpg filetype.
  */
 router.get("/shows/:showid", async ctx => {
-  ctx.set("Content-Type", "image/png");
-  ctx.body = await resolve("./media/static/shows", ctx.params.showid, "png");
+  ctx.set("Content-Type", "image/jpeg");
+  ctx.body = await resolve("./media/static/shows", ctx.params.showid, "jpg");
 });
 
 /**
@@ -32,14 +32,14 @@ router.get("/video/:filename", async ctx => {
 
 /**
  * Returns marketing images (if found) or default.
- * Enforces PNG filetype.
+ * Enforces jpg filetype.
  */
 router.get("/marketing/:filename", async ctx => {
-  ctx.set("Content-Type", "image/png");
+  ctx.set("Content-Type", "image/jpeg");
   ctx.body = await resolve(
     "./media/static/marketing",
     ctx.params.filename,
-    "png"
+    "jpg"
   );
 });
 
