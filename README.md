@@ -1,4 +1,4 @@
-# `raw-media-server`
+# `media-server`
 
 A media server for all the many media outlets at RAW1251AM.
 
@@ -14,8 +14,8 @@ _NOTE AGAIN, all other filetypes (png, mov) simply won't be served. We are stric
 
 ## Installation
 
-1. `git clone https://github.com/WillTheVideoMan/raw-media-server.git`
-2. `cd raw-media-server`
+1. `git clone https://github.com/radiowarwick/media-server.git`
+2. `cd media-server`
 3. `npm i`
 4. Define env varables. PORT and DISCOGS_API_KEY are required.
 5. `npm start`
