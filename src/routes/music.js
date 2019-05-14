@@ -119,19 +119,32 @@ const getHash = str =>
     .digest("hex");
 
 /**
- * Saves an image from a remote location to local disk of a given path.
+ * Gets the file type from a given path or url as a string.
  *
- * Destroys existing file in path if marked as existing.
+ * @param {string} str - The string from which the type should be extracted.
+ */
+const getFileType = str => {
+  const parts = str.split(".");
+  return parts[parts.length - 1];
+};
+
+/**
+ * Saves an image from a remote location to local disk of a given path.
  *
  * @param {string} imgURL - The remote URL to fetch.
  * @param {string} dir - The dir to save the remote URL.
- * @param {string} filename - The filename of the file to save the remote URL.
+ * @param {string} hash - The hashed string, which will be used as the file name.
  */
-const saveImage = async (imgURL, dir, filename) => {
+const saveImage = async (imgURL, dir, hash) => {
+  /**
+   * Get the file type of the remote image URL.
+   */
+  const type = getFileType(imgURL);
+
   /**
    * Build the path string.
    */
-  const path = dir + "/" + filename;
+  const path = dir + "/" + hash + "." + type;
 
   /**
    * Define a new file writer at the given path.
@@ -164,12 +177,18 @@ const saveImage = async (imgURL, dir, filename) => {
        * Here we:
        * - Change the image to a 512x512 square about the center of the image.
        * - Compress slightly (lossy but almost unnoticable).
-       * - Re-write the file back to the same place.
+       * - Re-write the file, converting to a JPG if required.
        */
       image
         .cover(512, 512)
         .quality(75)
-        .write(path);
+        .write(path.replace("." + type, ".jpg"));
+
+      /**
+       * If the original non-JPG file is still hanging around after conversion, delete it.
+       * If the file was already a JPG, then we overwrote the original so no need to delete anything.
+       */
+      if (type !== "jpg") await fs.unlink(path);
 
       /**
        * Resolve the promise.
@@ -208,10 +227,11 @@ const resolveFilename = async (string, path, searchParams) => {
     const imgURL = await fetchRemoteImageURL(searchParams);
 
     /**
-     * If an image is avaliable to download, save it to local disk and return the matching filename of the now saved image.
+     * If an image is avaliable to download, save it to local disk and return the matching filename
+     * (which is the hashed string) of the now saved image.
      */
     if (imgURL) {
-      await saveImage(imgURL, path, hash + ".jpg");
+      await saveImage(imgURL, path, hash);
       return hash + ".jpg";
     }
   } else {
@@ -269,12 +289,18 @@ const fetchRemoteImageURL = async params => {
       setTimeout(() => (limited = false), 10000);
     }
 
-    if (response.data.results[0] && response.data.results[0].cover_image)
-      return response.data.results[0].cover_image;
+    if (response.data.results[0] && response.data.results[0].cover_image) {
+      /**
+       * Only return a valid URL if it is a JPG, because for some reason,
+       * DISCOGS serves a broken GIF image as a "spacer", but all JPGs are just dandy.
+       */
+      if (getFileType(response.data.results[0].cover_image) === "jpg")
+        return response.data.results[0].cover_image;
+    }
   }
 
   /**
-   * If no image can be found, return null.
+   * If no valid image can be found, return null.
    */
   return null;
 };
