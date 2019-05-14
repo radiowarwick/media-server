@@ -104,7 +104,7 @@ However, if there ever came a point where Dicogs stopped working or went under, 
 
 ## Developer's guide to switching providers
 
-Ok, first job is to refer to line `230` of the file in `src/routes/music.js`. There is a function called `fetchRemoteImageURL`: this is our 'plug-n-play' function that can be impemented for any provider.
+Ok, first job is to refer to line `261` of the file in `src/routes/music.js`. There is a function called `fetchRemoteImageURL`: this is our 'plug-n-play' function that can be impemented for any provider.
 
 This function returns a string containing the URL of an image, or else null if your new provider can't supply one.
 
@@ -116,6 +116,6 @@ Your implementation should:
 - Handle any authentication needed for such a provider. For example, Spotify has a [gosh darn auth flow](https://developer.spotify.com/documentation/general/guides/authorization-guide/#client-credentials-flow) to follow.
 - Properly follow the async/await style, using the await keyword for any async call. This is important as Koa uses a neat try/catch middleware to catch any errors.
 
-Finally, make sure that you update the rest of the code to feed in your new implementation's arguments. This includes the `resolveFilename` function (line `208`) and in each route where `resolveFilename` is called (lines `27`, `60` and `76`).
+Finally, make sure that you update the rest of the code to feed in your new implementation's arguments. This includes the `resolveFilename` function (line `208`) and in each route where `resolveFilename` is called.
 
 And that's it! Hopefully that wasn't too painful.
