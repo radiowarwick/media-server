@@ -102,7 +102,7 @@ Currently we used [Discogs](https://www.discogs.com/developers/) as our provider
 
 However, if there ever came a point where Dicogs stopped working or went under, this server has been written so that you can easily plug in another data source (such as [Spotify](https://developer.spotify.com/), which would be super ideal but is also super expensive and has super picky [terms](https://developer.spotify.com/terms/#iv).).
 
-##Developer's guide to switching providers
+## Developer's guide to switching providers
 
 Ok, first job is to refer to line `230` of the file in `src/routes/music.js`. There is a function called `fetchRemoteImageURL`: this is our 'plug-n-play' function that can be impemented for any provider.
 
