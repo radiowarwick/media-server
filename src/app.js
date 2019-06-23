@@ -8,7 +8,7 @@ const describe = require("./routes/describe");
 const app = new Koa();
 
 /**
- * For each async peice of middleware, try it, and report on any errors.
+ * For each async piece of middleware, try it, and report on any errors.
  *
  * Koa middleware cascades, so putting this at the top of the file ensures all errors are captured.
  */
@@ -23,7 +23,7 @@ app.use(async (ctx, next) => {
 });
 
 /**
- * Compress all compressable responses over 2KB. This is includes JPEGs and MP4s
+ * Compress all compressible responses over 2KB. This is includes JPEGs and MP4s
  */
 app.use(
   compress({
@@ -34,18 +34,10 @@ app.use(
 );
 
 /**
- * Add a max-age of 14 days for all content. Allows for browser caching.
- */
-app.use(async (ctx, next) => {
-  await next();
-  ctx.set("Cache-Control", "max-age=1209600");
-});
-
-/**
  * Define routes
- * - Music uses a cacheable router.
+ * - Music uses a cache-able router.
  * - Static is, well, static.
- * - Describe tells us about the avaliable media.
+ * - Describe tells us about the available media.
  */
 app.use(mount("/music", music.router.routes()));
 app.use(mount("/static", static.router.routes()));

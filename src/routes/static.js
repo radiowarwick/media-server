@@ -48,7 +48,7 @@ router.get("/marketing/:filename", async ctx => {
  */
 async function resolve(dir, filename, type) {
   /**
-   * Normalise the filename.
+   * Normalize the filename.
    */
   filename = filename.toLowerCase();
 

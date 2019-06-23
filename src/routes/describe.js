@@ -43,7 +43,7 @@ router.get("/:endpoint", async ctx => {
     const filenames = await fs.readdir("./media/static/" + endpoint);
 
     /**
-     * Return a succesful response.
+     * Return a successful response.
      */
     ctx.body = {
       success: true,

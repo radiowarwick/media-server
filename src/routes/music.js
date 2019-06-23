@@ -12,7 +12,7 @@ const router = new koaRouter();
 let limited = false;
 
 /**
- * Get an artist's image. This is usually a candid shot of the artist infront of a tree.
+ * Get an artist's image. This is usually a candid shot of the artist in-front of a tree.
  */
 router.get("/artist/:artist", async ctx => {
   /**
@@ -173,10 +173,10 @@ const saveImage = async (imgURL, dir, hash) => {
       const image = await jimp.read(path);
 
       /**
-       * Executing methods on the returned jimp object carrys out image manupulation.
+       * Executing methods on the returned jimp object carries out image manipulation.
        * Here we:
        * - Change the image to a 512x512 square about the center of the image.
-       * - Compress slightly (lossy but almost unnoticable).
+       * - Compress slightly (lossy but almost unnoticeable).
        * - Re-write the file, converting to a JPG if required.
        */
       image
@@ -201,9 +201,9 @@ const saveImage = async (imgURL, dir, hash) => {
 
 /**
  * Resolves a filename for given parameters. Will return null if no filename can be found/created.
- * First, we will check if the file if avalable on local disk.
+ * First, we will check if the file if available on local disk.
  * If not, we will fetch and save a remote image to local disk.
- * If no image is avaliable, return null.
+ * If no image is available, return null.
  *
  * @param {string} string - The string representation of the filename. This is a normal, escaped string.
  * @param {string} path - The path under which the file should be located. Also thr save path in the event of a remote download.
@@ -227,7 +227,7 @@ const resolveFilename = async (string, path, searchParams) => {
     const imgURL = await fetchRemoteImageURL(searchParams);
 
     /**
-     * If an image is avaliable to download, save it to local disk and return the matching filename
+     * If an image is available to download, save it to local disk and return the matching filename
      * (which is the hashed string) of the now saved image.
      */
     if (imgURL) {
@@ -250,8 +250,8 @@ const resolveFilename = async (string, path, searchParams) => {
 /**
  * Returns the URL of an image from a remote API based on search parameters.
  *
- * This function is specific to the Discogs API, and is technially the only function which
- * needs to be changed if Dicogs is depreciated.
+ * This function is specific to the Discogs API, and is technically the only function which
+ * needs to be changed if Discogs is depreciated.
  *
  * This function returns a valid URL as a string or null. If you are re-implementing with a different API,
  * please follow this return style strictly.
@@ -260,12 +260,12 @@ const resolveFilename = async (string, path, searchParams) => {
  */
 const fetchRemoteImageURL = async params => {
   /**
-   * If we are not rate-limited by the Discogs API (429), then procceed with the request.
+   * If we are not rate-limited by the Discogs API (429), then proceed with the request.
    */
   if (!limited) {
     /**
      * Fetch the response from the Discogs "Database Searcch" endpoint.
-     * Limit the response to the most relevent response by returning only the top result (per_page = 1).
+     * Limit the response to the most relevant response by returning only the top result (per_page = 1).
      * Finally, pass the Discogs API Key.
      */
     const response = await axios.get(
@@ -278,7 +278,7 @@ const fetchRemoteImageURL = async params => {
     /**
      * If we have only 5 requests left to make, then halt/limit any requests for the next 10 seconds.
      *
-     * In an async enviroment like this, a resonable buffer of 5 requests is allocated, as the requests
+     * In an async environment like this, a reasonable buffer of 5 requests is allocated, as the requests
      * already underway will continue to reduce the remaining number of calls left.
      *
      * This is not a failsafe block, and it is possible that very heavy loads (more than 5 async calls)
