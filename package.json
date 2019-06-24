@@ -22,8 +22,6 @@
     "cron": "^1.7.0",
     "dotenv": "^7.0.0",
     "fs-extra": "^7.0.1",
-    "imagemin": "^6.1.0",
-    "imagemin-pngquant": "^7.0.0",
     "jimp": "^0.6.4",
     "koa": "^2.7.0",
     "koa-compress": "^3.0.0",

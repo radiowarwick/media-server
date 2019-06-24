@@ -31,8 +31,7 @@ router.get("/:endpoint", async ctx => {
   const exists = await fs.pathExists("./media/static/" + endpoint);
 
   /**
-   * If the endpoint has a valid path, return the names of the files, and the path at which it is found,
-   * removing the file type (as only JPGs are served).
+   * If the endpoint has a valid path, return the names of the files.
    *
    * Else, tell the user the endpoint did not exist on our system.
    */
@@ -48,7 +47,7 @@ router.get("/:endpoint", async ctx => {
     ctx.body = {
       success: true,
       path: "/static/" + endpoint + "/",
-      files: filenames.map(f => f.replace(".jpg", "").replace(".mp4", ""))
+      files: filenames
     };
   } else {
     /**

@@ -7,7 +7,7 @@ const router = new koaRouter();
  * Returns exec images (if found) or default.
  * Enforces JPEG filetype.
  */
-router.get("/exec/:username", async ctx => {
+router.get("/exec/:username.jpg", async ctx => {
   ctx.set("Content-Type", "image/jpeg");
   ctx.body = await resolve("./media/static/exec", ctx.params.username, "jpg");
 });
@@ -16,7 +16,7 @@ router.get("/exec/:username", async ctx => {
  * Returns show images (if found) or default.
  * Enforces jpg filetype.
  */
-router.get("/shows/:showid", async ctx => {
+router.get("/shows/:showid.jpg", async ctx => {
   ctx.set("Content-Type", "image/jpeg");
   ctx.body = await resolve("./media/static/shows", ctx.params.showid, "jpg");
 });
@@ -25,7 +25,7 @@ router.get("/shows/:showid", async ctx => {
  * Returns video files (if found) or default.
  * Enforces MP4 filetype.
  */
-router.get("/video/:filename", async ctx => {
+router.get("/video/:filename.mp4", async ctx => {
   ctx.set("Content-Type", "video/mp4");
   ctx.body = await resolve("./media/static/video", ctx.params.filename, "mp4");
 });
@@ -34,7 +34,7 @@ router.get("/video/:filename", async ctx => {
  * Returns marketing images (if found) or default.
  * Enforces jpg filetype.
  */
-router.get("/marketing/:filename", async ctx => {
+router.get("/marketing/:filename.jpg", async ctx => {
   ctx.set("Content-Type", "image/jpeg");
   ctx.body = await resolve(
     "./media/static/marketing",
