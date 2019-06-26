@@ -14,7 +14,7 @@ let limited = false;
 /**
  * Get an artist's image. This is usually a candid shot of the artist in-front of a tree.
  */
-router.get("/artist/:artist", async ctx => {
+router.get("/artist/:artist.jpg", async ctx => {
   /**
    * Extract and escape the request parameters.
    */
@@ -46,7 +46,7 @@ router.get("/artist/:artist", async ctx => {
  *
  * Will return the album art, or else the artist image, or else a default image.
  */
-router.get("/track/:artist/:title", async ctx => {
+router.get("/track/:artist/:title.jpg", async ctx => {
   /**
    * Extract and escape the request parameters
    */
@@ -175,12 +175,12 @@ const saveImage = async (imgURL, dir, hash) => {
       /**
        * Executing methods on the returned jimp object carries out image manipulation.
        * Here we:
-       * - Change the image to a 512x512 square about the center of the image.
+       * - Change the image to a 640x640 square about the center of the image.
        * - Compress slightly (lossy but almost unnoticeable).
        * - Re-write the file, converting to a JPG if required.
        */
       image
-        .cover(512, 512)
+        .cover(640, 640)
         .quality(75)
         .write(path.replace("." + type, ".jpg"));
 
@@ -206,7 +206,7 @@ const saveImage = async (imgURL, dir, hash) => {
  * If no image is available, return null.
  *
  * @param {string} string - The string representation of the filename. This is a normal, escaped string.
- * @param {string} path - The path under which the file should be located. Also thr save path in the event of a remote download.
+ * @param {string} path - The path under which the file should be located. Also the save path in the event of a remote download.
  * @param {object} searchParams - If a remote search must be made, define the GET params of such a request here.
  */
 const resolveFilename = async (string, path, searchParams) => {
@@ -264,7 +264,7 @@ const fetchRemoteImageURL = async params => {
    */
   if (!limited) {
     /**
-     * Fetch the response from the Discogs "Database Searcch" endpoint.
+     * Fetch the response from the Discogs "Database Search" endpoint.
      * Limit the response to the most relevant response by returning only the top result (per_page = 1).
      * Finally, pass the Discogs API Key.
      */
