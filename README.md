@@ -4,14 +4,6 @@ A media server for all the many media outlets at RAW1251AM.
 
 All images are returned as JPEGs (nicely compresses), and all videos as MP4s.
 
-_NOTE, for all endpoints, file type is not required at the end of the request._
-
-Yes: `request(static/exec/whall)` <- File is determined dynamically. Super!
-
-NO: `request(static/exec/whall.jpg)` <- Don't put JPG! No! Stop!
-
-_NOTE AGAIN, all other filetypes (png, mov) simply won't be served. We are strict about this._
-
 ## Installation
 
 1. `git clone https://github.com/radiowarwick/media-server.git`
@@ -22,59 +14,59 @@ _NOTE AGAIN, all other filetypes (png, mov) simply won't be served. We are stric
 
 ## Endpoints
 
-### /music/artist/:artist
+### /music/artist/:artist.jpg
 
 Returns an image for a given artist (if found) or else a default placeholder image.
 
 `:artist` can be any URI encoded string.
 
 Example:
-`request(/music/artist/tame%20impala);` will return an artist image for 'Tame Impala'.
+`request(/music/artist/tame%20impala.jpg);` will return an artist image for 'Tame Impala'.
 
-### /music/track/:artist/:title
+### /music/track/:artist/:title.jpg
 
 Returns a track image for a given artist and title (if found) or else the artists "profile" image, or else default placeholder image.
 
 `:artist` and `:title` can be any URI encoded string.
 
 Example:
-`request(/music/track/tame%20impala/pateince);` will return an album art image for the track titled 'Pateince' by 'Tame Impala'.
+`request(/music/track/tame%20impala/pateince.jpg);` will return an album art image for the track titled 'Pateince' by 'Tame Impala'.
 
-### /static/exec/:username
+### /static/exec/:username.jpg
 
 Returns an exec members images based on the member's username.
 
 `:username` can be any member's username.
 
 Example:
-`request(static/exec/whall);` will return an image for exec member with username 'whall'.
+`request(static/exec/whall.jpg);` will return an image for exec member with username 'whall'.
 
-### /static/shows/:showid
+### /static/shows/:showid.jpg
 
 Returns show's cover image based on the show's ID.
 
 `:showid` can be any show's ID.
 
 Example:
-`request(static/shows/5010);` will return an image for show with show ID '5010'.
+`request(static/shows/5010.jpg);` will return an image for show with show ID '5010'.
 
-### /static/marketing/:filename
+### /static/marketing/:filename.jpg
 
 Returns a marketing image based on the filename.
 
 `:filename can be any valid filename`
 
 Example:
-`request(/static/marketing/varsity);` will return an image for the varsity marketing campain.
+`request(/static/marketing/varsity.jpg);` will return an image for the varsity marketing campain.
 
-### /static/video/:filename
+### /static/video/:filename.jpg
 
 Returns a video based on the filename.
 
 `:video` can be any video filename.
 
 Example:
-`request(static/video/timelapse);` will return a video with filename 'timelapse'.
+`request(static/video/timelapse.jpg);` will return a video with filename 'timelapse'.
 
 ### /describe
 
