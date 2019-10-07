@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/WillTheVideoMan/raw-media-server#readme",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.18.1",
     "cron": "^1.7.0",
     "dotenv": "^7.0.0",
     "fs-extra": "^7.0.1",
