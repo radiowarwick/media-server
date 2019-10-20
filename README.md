@@ -1,8 +1,6 @@
 # `media-server`
 
-A media server for all the many media outlets at RAW1251AM.
-
-All images are returned as JPEGs (nicely compresses), and all videos as MP4s.
+A media server for all the many media resources at RAW 1251AM.
 
 ## Installation
 
@@ -12,7 +10,9 @@ All images are returned as JPEGs (nicely compresses), and all videos as MP4s.
 4. Define env varables. PORT and DISCOGS_API_KEY are required.
 5. `npm start`
 
-## Endpoints
+## Dynamic Endpoints
+
+Dynamic resources involve logic which attempts to produce a relevant image from an external resource. If no resource is found, a default 'placeholder' image will be returned.
 
 ### /music/artist/:artist.jpg
 
@@ -31,6 +31,10 @@ Returns a track image for a given artist and title (if found) or else the artist
 
 Example:
 `request(/music/track/tame%20impala/pateince.jpg);` will return an album art image for the track titled 'Pateince' by 'Tame Impala'.
+
+## Static Endpoints
+
+For all static resources, this server will attempt to return a relevant resource, or else if the resource does not exist, it will return a default 'placeholder' resource. This prevents clients from having no resource to display at all; clients can make use of this media server's 'describe' endpoint to learn about what resources are available.
 
 ### /static/exec/:username.jpg
 
@@ -57,16 +61,25 @@ Returns a marketing image based on the filename.
 `:filename can be any valid filename`
 
 Example:
-`request(/static/marketing/varsity.jpg);` will return an image for the varsity marketing campain.
+`request(/static/marketing/varsity.jpg);` will return an image for the varsity marketing campaign.
 
-### /static/video/:filename.jpg
+### /static/video/:filename.mp4
 
 Returns a video based on the filename.
 
 `:video` can be any video filename.
 
 Example:
-`request(static/video/timelapse.jpg);` will return a video with filename 'timelapse'.
+`request(static/video/timelapse.mp4);` will return a video with filename 'timelapse.mp4'.
+
+### /static/icons/:icon.png
+
+Returns an icon based on the filename.
+
+`:icon` can be any icon filename.
+
+Example:
+`request(/static/icons/accept.png);` will return an icon with filename 'accept.png'.
 
 ### /describe
 
