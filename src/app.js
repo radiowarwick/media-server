@@ -27,7 +27,7 @@ app.use(async (ctx, next) => {
  */
 app.use(
   compress({
-    filter: type => type === "image/jpeg" || "video/mp4",
+    filter: type => type === "image/jpeg" || "video/mp4" || "image/png",
     threshold: 2048,
     flush: require("zlib").Z_SYNC_FLUSH
   })

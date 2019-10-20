@@ -44,6 +44,15 @@ router.get("/marketing/:filename.jpg", async ctx => {
 });
 
 /**
+ * Returns icons (if found) or default.
+ * Enforces png filetype.
+ */
+router.get("/icons/:filename.png", async ctx => {
+  ctx.set("Content-Type", "image/png");
+  ctx.body = await resolve("./media/static/icons", ctx.params.filename, "png");
+});
+
+/**
  * Resolves a file from a given path, returning default if not found.
  */
 async function resolve(dir, filename, type) {
