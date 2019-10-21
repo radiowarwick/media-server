@@ -1,11 +1,17 @@
 const Koa = require("koa");
 const mount = require("koa-mount");
 const compress = require("koa-compress");
+const body = require("koa-body");
+
+const app = new Koa();
+
+/**
+ * Import all the routes.
+ */
 const music = require("./routes/music");
 const static = require("./routes/static");
 const describe = require("./routes/describe");
-
-const app = new Koa();
+const upload = require("./routes/upload");
 
 /**
  * For each async piece of middleware, try it, and report on any errors.
@@ -27,21 +33,29 @@ app.use(async (ctx, next) => {
  */
 app.use(
   compress({
-    filter: type => type === "image/jpeg" || "video/mp4" || "image/png",
+    filter: type =>
+      type === "image/jpeg" || "image/png" || "image/gif" || "video/mp4",
     threshold: 2048,
     flush: require("zlib").Z_SYNC_FLUSH
   })
 );
 
 /**
+ * Allow KOA to parse the body of a request, including support for multipart forms.
+ */
+app.use(body({ multipart: true }));
+
+/**
  * Define routes
  * - Music uses a cache-able router.
  * - Static is, well, static.
  * - Describe tells us about the available media.
+ * - Upload is a secure media upload endpoint.
  */
 app.use(mount("/music", music.router.routes()));
 app.use(mount("/static", static.router.routes()));
 app.use(mount("/describe", describe.router.routes()));
+app.use(mount("/upload", upload.router.routes()));
 
 /**
  * Start the music image cache pruner.
