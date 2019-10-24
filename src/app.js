@@ -2,7 +2,20 @@ const Koa = require("koa");
 const mount = require("koa-mount");
 const compress = require("koa-compress");
 const body = require("koa-body");
+const {
+  MUSIC,
+  STATIC
+} = require("./config");
 
+/**
+ * An array of all mime types of all image groups listed in the config file.
+ * Includes the music image group mime type, then the mime types of all static image groups.
+ */
+const mimeTypes = [MUSIC.MIME_TYPE].concat(STATIC.map(static => static.MIME_TYPE))
+
+/**
+ * Instantiate a new KOA app.
+ */
 const app = new Koa();
 
 /**
@@ -23,18 +36,21 @@ app.use(async (ctx, next) => {
     await next();
   } catch (err) {
     ctx.status = err.status || 500;
-    ctx.body = { success: false, message: err.message };
+    ctx.body = {
+      success: false,
+      message: err.message
+    };
     ctx.app.emit("error", err, ctx);
   }
 });
 
 /**
- * Compress all compressible responses over 2KB. This is includes JPEGs and MP4s
+ * Compress all compressible responses over 2KB. 
+ * This is includes compression of all mime types listed in the config file.
  */
 app.use(
   compress({
-    filter: type =>
-      type === "image/jpeg" || "image/png" || "image/gif" || "video/mp4",
+    filter: type => mimeTypes.find(mimeType => mimeType === type),
     threshold: 2048,
     flush: require("zlib").Z_SYNC_FLUSH
   })
@@ -43,7 +59,9 @@ app.use(
 /**
  * Allow KOA to parse the body of a request, including support for multipart forms.
  */
-app.use(body({ multipart: true }));
+app.use(body({
+  multipart: true
+}));
 
 /**
  * Define routes

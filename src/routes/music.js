@@ -44,12 +44,10 @@ router.get("/artist/:artist." + config.MUSIC.FILE_EXTENSION, async ctx => {
    * Define the path of the locally stored image.
    * If no filename could be resolved, set the path to that of the the default resource.
    */
-  const path = filename
-    ? "./media/music/artist/" + filename
-    : "./media/defaults/" +
-      config.MUSIC.DEFAULT_RESOURCE +
-      "." +
-      config.MUSIC.FILE_EXTENSION;
+  const path = filename ?
+    "./media/music/artist/" + filename :
+    "./media/defaults/" +
+    config.MUSIC.DEFAULT_RESOURCE
 
   /**
    * Serve the artist image.
@@ -78,8 +76,7 @@ router.get(
      */
     let filename = await resolveFilename(
       artist + ":" + title,
-      "./media/music/track/",
-      {
+      "./media/music/track/", {
         q: title,
         artist: artist,
         type: "release"
@@ -94,8 +91,7 @@ router.get(
     if (!filename) {
       filename = await resolveFilename(
         artist + ":" + title,
-        "./media/music/track/",
-        {
+        "./media/music/track/", {
           q: artist,
           type: "artist"
         }
@@ -106,12 +102,10 @@ router.get(
      * Define the path of the locally stored image.
      * If no filename could be resolved, set the path to that of the the default resource.
      */
-    const path = filename
-      ? "./media/music/track/" + filename
-      : "./media/defaults/" +
-        config.MUSIC.DEFAULT_RESOURCE +
-        "." +
-        config.MUSIC.FILE_EXTENSION;
+    const path = filename ?
+      "./media/music/track/" + filename :
+      "./media/defaults/" +
+      config.MUSIC.DEFAULT_RESOURCE
 
     /**
      * Serve the track image.
@@ -129,9 +123,9 @@ router.get(
  */
 const escapeString = str =>
   str
-    .trim()
-    .toLowerCase()
-    .replace(/\s{2,}/g, " ");
+  .trim()
+  .toLowerCase()
+  .replace(/\s{2,}/g, " ");
 
 /**
  * Generates a MD5 hash of a string. Hex encoded.
@@ -140,9 +134,9 @@ const escapeString = str =>
  */
 const getHash = str =>
   crypto
-    .createHash("md5")
-    .update(str)
-    .digest("hex");
+  .createHash("md5")
+  .update(str)
+  .digest("hex");
 
 /**
  * Gets the file type from a given path or url as a string.
@@ -303,9 +297,12 @@ const fetchRemoteImageURL = async params => {
      * Finally, pass the Discogs API Key.
      */
     const response = await axios.get(
-      "https://api.discogs.com/database/search",
-      {
-        params: { ...params, per_page: "1", token: config.DISCOGS_API_KEY }
+      "https://api.discogs.com/database/search", {
+        params: {
+          ...params,
+          per_page: "1",
+          token: config.DISCOGS_API_KEY
+        }
       }
     );
 
@@ -374,4 +371,7 @@ const pruner = new CronJob("0 0 0 * * *", async () => {
 /**
  * Export the routes and pruner.
  */
-module.exports = { router: router, pruner: pruner };
+module.exports = {
+  router: router,
+  pruner: pruner
+};

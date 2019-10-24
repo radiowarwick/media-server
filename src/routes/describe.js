@@ -1,3 +1,7 @@
+/**
+ * describe.js - Provides routes which describe the resource endpoints.
+ */
+
 const koaRouter = require("koa-router");
 const fs = require("fs-extra");
 const config = require("../config");
@@ -54,14 +58,19 @@ router.get("/:endpoint", async ctx => {
     ctx.body = {
       success: true,
       path: "/static/" + endpoint + "/",
-      fileExtension: config.STATIC[index].FILE_EXTENSION,
+      mimeType: config.STATIC[index].MIME_TYPE,
       files: filenames
     };
   } else {
     /**
      * Return a sad failure response.
      */
-    ctx.body = { success: false, path: null, fileExtension: null, files: null };
+    ctx.body = {
+      success: false,
+      path: null,
+      fileExtension: null,
+      files: null
+    };
   }
 });
 

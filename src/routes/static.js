@@ -63,9 +63,7 @@ config.STATIC.forEach(async group => {
     else
       ctx.body = await fs.readFile(
         "./media/defaults/" +
-          group.DEFAULT_RESOURCE +
-          "." +
-          group.FILE_EXTENSION
+        group.DEFAULT_RESOURCE
       );
   });
 });
