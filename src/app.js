@@ -1,11 +1,29 @@
 const Koa = require("koa");
 const mount = require("koa-mount");
 const compress = require("koa-compress");
+const body = require("koa-body");
+const { SUPPORTED_MIME_TYPES } = require("./enums");
+
+/**
+ * Constructs an array of all supported MIME types.
+ */
+const mimeTypes = []
+  .concat(SUPPORTED_MIME_TYPES.AUDIO)
+  .concat(SUPPORTED_MIME_TYPES.VIDEO)
+  .concat(SUPPORTED_MIME_TYPES.IMAGE);
+
+/**
+ * Instantiate a new KOA app.
+ */
+const app = new Koa();
+
+/**
+ * Import all the routes.
+ */
 const music = require("./routes/music");
 const static = require("./routes/static");
 const describe = require("./routes/describe");
-
-const app = new Koa();
+const upload = require("./routes/upload");
 
 /**
  * For each async piece of middleware, try it, and report on any errors.
@@ -17,19 +35,36 @@ app.use(async (ctx, next) => {
     await next();
   } catch (err) {
     ctx.status = err.status || 500;
-    ctx.body = { success: false, message: err.message };
+    ctx.body = {
+      success: false,
+      message: err.message
+    };
     ctx.app.emit("error", err, ctx);
   }
 });
 
 /**
- * Compress all compressible responses over 2KB. This is includes JPEGs and MP4s
+ * Compress all compressible responses over 2KB.
+ * This is includes compression of all mime types listed in the config file.
  */
 app.use(
   compress({
-    filter: type => type === "image/jpeg" || "video/mp4" || "image/png",
+    filter: type => mimeTypes.find(mimeType => mimeType === type),
     threshold: 2048,
     flush: require("zlib").Z_SYNC_FLUSH
+  })
+);
+
+/**
+ * Allow KOA to parse the body of a request, including support for multipart forms.
+ * Limit the maximum file size to 5GB.
+ */
+app.use(
+  body({
+    multipart: true,
+    formidable: {
+      maxFileSize: 5120 * 1024 * 1024
+    }
   })
 );
 
@@ -38,10 +73,12 @@ app.use(
  * - Music uses a cache-able router.
  * - Static is, well, static.
  * - Describe tells us about the available media.
+ * - Upload is a secure media upload endpoint.
  */
 app.use(mount("/music", music.router.routes()));
 app.use(mount("/static", static.router.routes()));
 app.use(mount("/describe", describe.router.routes()));
+app.use(mount("/upload", upload.router.routes()));
 
 /**
  * Start the music image cache pruner.
