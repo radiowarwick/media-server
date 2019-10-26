@@ -40,6 +40,21 @@ router.post("/:group", async ctx => {
   const resource = ctx.request.files.resource;
 
   /**
+   * Assert that a resource has been POSTed.
+   */
+  ctx.assert(resource, 400, "must include 'resource' in POST body");
+
+  /**
+   * Extract the filename from the request.
+   */
+  const filename = ctx.request.body.filename;
+
+  /**
+   * Assert that a filename has been POSTed.
+   */
+  ctx.assert(filename, 400, "must include 'filename' in POST body");
+
+  /**
    * Deconstruct targetGroup object into individual keys for improved readability.
    */
   const { NAME, FILE_EXTENSION, MIME_TYPE } = targetGroup;
@@ -48,12 +63,7 @@ router.post("/:group", async ctx => {
    * Construct the target path for the new resource.
    */
   const targetPath =
-    "/static/" +
-    NAME +
-    "/" +
-    escapeFilename(ctx.request.body.filename) +
-    "." +
-    FILE_EXTENSION;
+    "/static/" + NAME + "/" + escapeFilename(filename) + "." + FILE_EXTENSION;
 
   /**
    * Assert that the MIME class (e.g. 'image') of the new resource matches that of the target group.
