@@ -1,6 +1,6 @@
 const koaRouter = require("koa-router");
 const fs = require("fs-extra");
-const config = require("../config");
+const { STATIC } = require("../config");
 
 const router = new koaRouter();
 
@@ -14,7 +14,7 @@ fs.ensureDir("./media/static");
  * by reading the configuration for each static resource group from the config file. The route will return
  * either a meaningful resource if it is found on disk, or else a default 'placeholder' image.
  */
-config.STATIC.forEach(async group => {
+STATIC.forEach(async group => {
   /**
    * Construct the route URL string based on the image group parameters.
    */
@@ -62,8 +62,7 @@ config.STATIC.forEach(async group => {
     if (exists) ctx.body = await fs.readFile(path);
     else
       ctx.body = await fs.readFile(
-        "./media/defaults/" +
-        group.DEFAULT_RESOURCE
+        "./media/defaults/" + group.DEFAULT_RESOURCE
       );
   });
 });

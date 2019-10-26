@@ -14,49 +14,55 @@ module.exports = {
     PASSWORD: process.env.UPLOAD_PASSWORD
   },
   /**
-   * Defines the parameters of the "music" resource endpoint, including artist profile snaps and 
-   * track album arts.
+   * Defines the parameters of the "music" resources, including artist profile snaps and track album arts.
    */
   MUSIC: {
     MIME_TYPE: "image/jpeg",
     FILE_EXTENSION: "jpg",
     DEFAULT_RESOURCE: "raw-logo-only.jpg",
+    QUALITY: 75.0,
     PIXEL_DIMENSIONS: {
       WIDTH: 640,
       HEIGHT: 640
     }
   },
   /**
-   * Define the parameters of all static resource endpoints. To define a new static endpoint, simply
-   * include a new resource endpoint object in this array. The resource endpoint will be instantiated when the
+   * Define the parameters of all static resource groups. To define a new static group, simply
+   * include a new resource group object in this array. The resource group will be instantiated when the
    * server is restarted.
-   * 
-   * All resource endpoint objects must follow a constant shape:
-   * 
-   * {
+   *
+   * All resource group objects must follow a defined shape:
+   *
+   *``` 
+   *{
    *    NAME: string,
    *    MIME_TYPE: string,
    *    FILE_EXTENSION: string,
-   *    DEFAULT_RESOURCE: string, 
+   *    DEFAULT_RESOURCE: string,
+   *    QUALITY: float,
    *    PIXEL_DIMENSIONS: {
    *      WIDTH: integer,
    *      HEIGHT: integer
    *    }
    * }
-   * 
-   * NAME can be any string.
-   * MIME_TYPE can be any valid IANA MIME type.
-   * FILE_EXTENSION can be any valid file extension which matches the MIME type.
-   * DEFAULT_RESOURCE can be the filename and valid extension of any default resource listed in the './media/defaults' folder.
-   * PIXEL_DIMENSIONS can be an object with keys WIDTH and HEIGHT with any integer values.
-   * 
+   *```
+
+   * `NAME` can be any string.
+   * `MIME_TYPE` can be any valid IANA MIME type. Ensure the MIME type is listed in the supported MIME types at "./enums.js".
+   * `FILE_EXTENSION` can be any valid file extension which matches the MIME type.
+   * `DEFAULT_RESOURCE` can be any valid filename and extension of any default resource listed in the './media/defaults' folder.
+   * `QUALITY` can be any valid float between 1 and 100.
+   * `PIXEL_DIMENSIONS` can be an object with keys WIDTH and HEIGHT with any integer values.
+   *
    * Some common sense must be used to match the MIME type, file extension, and default resource filename extension.
    */
-  STATIC: [{
+  STATIC: [
+    {
       NAME: "exec",
       MIME_TYPE: "image/jpeg",
       FILE_EXTENSION: "jpg",
       DEFAULT_RESOURCE: "raw-logo.jpg",
+      QUALITY: 80.0,
       PIXEL_DIMENSIONS: {
         WIDTH: 640,
         HEIGHT: 640
@@ -67,6 +73,7 @@ module.exports = {
       MIME_TYPE: "image/jpeg",
       FILE_EXTENSION: "jpg",
       DEFAULT_RESOURCE: "raw-logo-only.jpg",
+      QUALITY: 75.0,
       PIXEL_DIMENSIONS: {
         WIDTH: 640,
         HEIGHT: 640
@@ -77,6 +84,7 @@ module.exports = {
       MIME_TYPE: "image/jpeg",
       FILE_EXTENSION: "jpg",
       DEFAULT_RESOURCE: "raw-banner.jpg",
+      QUALITY: 82.0,
       PIXEL_DIMENSIONS: {
         WIDTH: 1920,
         HEIGHT: 1080
@@ -87,6 +95,7 @@ module.exports = {
       MIME_TYPE: "image/png",
       FILE_EXTENSION: "png",
       DEFAULT_RESOURCE: "raw-icon.png",
+      QUALITY: 100.0,
       PIXEL_DIMENSIONS: {
         WIDTH: 16,
         HEIGHT: 16
@@ -96,6 +105,7 @@ module.exports = {
       NAME: "video",
       MIME_TYPE: "video/mp4",
       FILE_EXTENSION: "mp4",
+      QUALITY: 22.0,
       DEFAULT_RESOURCE: "raw-timelapse.mp4",
       PIXEL_DIMENSIONS: {
         WIDTH: 1920,

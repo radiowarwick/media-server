@@ -5,7 +5,7 @@ const axios = require("axios");
 const jimp = require("jimp");
 const fs = require("fs-extra");
 
-const config = require("../config");
+const { MUSIC, DISCOGS_API_KEY } = require("../config");
 
 const router = new koaRouter();
 
@@ -25,7 +25,7 @@ fs.ensureDir("./media/music/track");
 /**
  * Get an artist's image. This is usually a candid shot of the artist in-front of a tree.
  */
-router.get("/artist/:artist." + config.MUSIC.FILE_EXTENSION, async ctx => {
+router.get("/artist/:artist." + MUSIC.FILE_EXTENSION, async ctx => {
   /**
    * Extract and escape the request parameters.
    */
@@ -44,15 +44,14 @@ router.get("/artist/:artist." + config.MUSIC.FILE_EXTENSION, async ctx => {
    * Define the path of the locally stored image.
    * If no filename could be resolved, set the path to that of the the default resource.
    */
-  const path = filename ?
-    "./media/music/artist/" + filename :
-    "./media/defaults/" +
-    config.MUSIC.DEFAULT_RESOURCE
+  const path = filename
+    ? "./media/music/artist/" + filename
+    : "./media/defaults/" + MUSIC.DEFAULT_RESOURCE;
 
   /**
    * Serve the artist image.
    */
-  ctx.set("Content-Type", config.MUSIC.MIME_TYPE);
+  ctx.set("Content-Type", MUSIC.MIME_TYPE);
   ctx.body = await fs.readFile(path);
 });
 
@@ -61,59 +60,57 @@ router.get("/artist/:artist." + config.MUSIC.FILE_EXTENSION, async ctx => {
  *
  * Will return the album art, or else the artist image, or else a default image.
  */
-router.get(
-  "/track/:artist/:title." + config.MUSIC.FILE_EXTENSION,
-  async ctx => {
-    /**
-     * Extract and escape the request parameters
-     */
-    const artist = escapeString(ctx.params.artist);
-    const title = escapeString(ctx.params.title);
+router.get("/track/:artist/:title." + MUSIC.FILE_EXTENSION, async ctx => {
+  /**
+   * Extract and escape the request parameters
+   */
+  const artist = escapeString(ctx.params.artist);
+  const title = escapeString(ctx.params.title);
 
-    /**
-     * Attempt to resolve a filename for the artist and title combo.
-     * The search params are configured to search for album art.
-     */
-    let filename = await resolveFilename(
+  /**
+   * Attempt to resolve a filename for the artist and title combo.
+   * The search params are configured to search for album art.
+   */
+  let filename = await resolveFilename(
+    artist + ":" + title,
+    "./media/music/track/",
+    {
+      q: title,
+      artist: artist,
+      type: "release"
+    }
+  );
+
+  /**
+   * If the filename was not resolved by the previous attempt, instead try to resolve
+   * based on artist only.
+   * The search params are configured to search for an artist "profile" image.
+   */
+  if (!filename) {
+    filename = await resolveFilename(
       artist + ":" + title,
-      "./media/music/track/", {
-        q: title,
-        artist: artist,
-        type: "release"
+      "./media/music/track/",
+      {
+        q: artist,
+        type: "artist"
       }
     );
-
-    /**
-     * If the filename was not resolved by the previous attempt, instead try to resolve
-     * based on artist only.
-     * The search params are configured to search for an artist "profile" image.
-     */
-    if (!filename) {
-      filename = await resolveFilename(
-        artist + ":" + title,
-        "./media/music/track/", {
-          q: artist,
-          type: "artist"
-        }
-      );
-    }
-
-    /**
-     * Define the path of the locally stored image.
-     * If no filename could be resolved, set the path to that of the the default resource.
-     */
-    const path = filename ?
-      "./media/music/track/" + filename :
-      "./media/defaults/" +
-      config.MUSIC.DEFAULT_RESOURCE
-
-    /**
-     * Serve the track image.
-     */
-    ctx.set("Content-Type", config.MUSIC.MIME_TYPE);
-    ctx.body = await fs.readFile(path);
   }
-);
+
+  /**
+   * Define the path of the locally stored image.
+   * If no filename could be resolved, set the path to that of the the default resource.
+   */
+  const path = filename
+    ? "./media/music/track/" + filename
+    : "./media/defaults/" + MUSIC.DEFAULT_RESOURCE;
+
+  /**
+   * Serve the track image.
+   */
+  ctx.set("Content-Type", MUSIC.MIME_TYPE);
+  ctx.body = await fs.readFile(path);
+});
 
 /**
  * Returns an escaped string.
@@ -123,9 +120,9 @@ router.get(
  */
 const escapeString = str =>
   str
-  .trim()
-  .toLowerCase()
-  .replace(/\s{2,}/g, " ");
+    .trim()
+    .toLowerCase()
+    .replace(/\s{2,}/g, " ");
 
 /**
  * Generates a MD5 hash of a string. Hex encoded.
@@ -134,9 +131,9 @@ const escapeString = str =>
  */
 const getHash = str =>
   crypto
-  .createHash("md5")
-  .update(str)
-  .digest("hex");
+    .createHash("md5")
+    .update(str)
+    .digest("hex");
 
 /**
  * Gets the file type from a given path or url as a string.
@@ -196,16 +193,13 @@ const saveImage = async (imgURL, dir, hash) => {
        * Executing methods on the returned jimp object carries out image manipulation.
        * Here we:
        * - Resize the image to the dimensions defined by the configuration.
-       * - Compress slightly (lossy but almost unnoticeable).
+       * - Compress the image based on the configuration file.
        * - Re-write the file, converting to the configuration file's defined file type if required.
        */
       image
-        .cover(
-          config.MUSIC.PIXEL_DIMENSIONS.WIDTH,
-          config.MUSIC.PIXEL_DIMENSIONS.HEIGHT
-        )
-        .quality(75)
-        .write(path.replace("." + type, "." + config.MUSIC.FILE_EXTENSION));
+        .cover(MUSIC.PIXEL_DIMENSIONS.WIDTH, MUSIC.PIXEL_DIMENSIONS.HEIGHT)
+        .quality(MUSIC.QUALITY)
+        .write(path.replace("." + type, "." + MUSIC.FILE_EXTENSION));
 
       /**
        * If the original downloaded file is of a different file extension to the newly converted file,
@@ -214,7 +208,7 @@ const saveImage = async (imgURL, dir, hash) => {
        * If the original file was already of the same file type of the newly converted file,
        * then we overwrote the original so no need to delete anything.
        */
-      if (type !== config.MUSIC.FILE_EXTENSION) await fs.unlink(path);
+      if (type !== MUSIC.FILE_EXTENSION) await fs.unlink(path);
 
       /**
        * Resolve the promise.
@@ -244,9 +238,7 @@ const resolveFilename = async (string, path, searchParams) => {
   /**
    * Boolean to define if the file exists on local disk.
    */
-  const exists = await fs.pathExists(
-    path + hash + "." + config.MUSIC.FILE_EXTENSION
-  );
+  const exists = await fs.pathExists(path + hash + "." + MUSIC.FILE_EXTENSION);
 
   if (!exists) {
     /**
@@ -260,13 +252,13 @@ const resolveFilename = async (string, path, searchParams) => {
      */
     if (imgURL) {
       await saveImage(imgURL, path, hash);
-      return hash + "." + config.MUSIC.FILE_EXTENSION;
+      return hash + "." + MUSIC.FILE_EXTENSION;
     }
   } else {
     /**
      * Image is on local disk, so return the matching filename.
      */
-    return hash + "." + config.MUSIC.FILE_EXTENSION;
+    return hash + "." + MUSIC.FILE_EXTENSION;
   }
 
   /**
@@ -297,11 +289,12 @@ const fetchRemoteImageURL = async params => {
      * Finally, pass the Discogs API Key.
      */
     const response = await axios.get(
-      "https://api.discogs.com/database/search", {
+      "https://api.discogs.com/database/search",
+      {
         params: {
           ...params,
           per_page: "1",
-          token: config.DISCOGS_API_KEY
+          token: DISCOGS_API_KEY
         }
       }
     );

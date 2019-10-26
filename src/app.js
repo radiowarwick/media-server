@@ -2,16 +2,15 @@ const Koa = require("koa");
 const mount = require("koa-mount");
 const compress = require("koa-compress");
 const body = require("koa-body");
-const {
-  MUSIC,
-  STATIC
-} = require("./config");
+const { SUPPORTED_MIME_TYPES } = require("./enums");
 
 /**
- * An array of all mime types of all image groups listed in the config file.
- * Includes the music image group mime type, then the mime types of all static image groups.
+ * Constructs an array of all supported MIME types.
  */
-const mimeTypes = [MUSIC.MIME_TYPE].concat(STATIC.map(static => static.MIME_TYPE))
+const mimeTypes = []
+  .concat(SUPPORTED_MIME_TYPES.AUDIO)
+  .concat(SUPPORTED_MIME_TYPES.VIDEO)
+  .concat(SUPPORTED_MIME_TYPES.IMAGE);
 
 /**
  * Instantiate a new KOA app.
@@ -45,7 +44,7 @@ app.use(async (ctx, next) => {
 });
 
 /**
- * Compress all compressible responses over 2KB. 
+ * Compress all compressible responses over 2KB.
  * This is includes compression of all mime types listed in the config file.
  */
 app.use(
@@ -58,10 +57,16 @@ app.use(
 
 /**
  * Allow KOA to parse the body of a request, including support for multipart forms.
+ * Limit the maximum file size to 5GB.
  */
-app.use(body({
-  multipart: true
-}));
+app.use(
+  body({
+    multipart: true,
+    formidable: {
+      maxFileSize: 5120 * 1024 * 1024
+    }
+  })
+);
 
 /**
  * Define routes
