@@ -10,6 +10,10 @@ COPY package*.json ./
 # Install modules for production
 RUN npm install --production
 
+# Install handbrake CLI
+RUN apt-get update -qq \
+&& apt-get install -y -qq handbrake-cli
+
 # Copy entire bundle to the working directory
 COPY . .
 

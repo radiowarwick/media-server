@@ -2,7 +2,7 @@
 
 A media server for all the many media resources at RAW 1251AM.
 
-## Installation
+## Installation (Development)
 
 1. `git clone https://github.com/radiowarwick/media-server.git`
 2. `cd media-server`
@@ -11,8 +11,26 @@ A media server for all the many media resources at RAW 1251AM.
    1. `sudo add-apt-repository --yes ppa:stebbins/handbrake-releases`
    2. `sudo apt-get update -qq`
    3. `sudo apt-get install -qq handbrake-cli`
-5. Define env varables. PORT and DISCOGS_API_KEY are required.
+5. Define env variables. PORT, DISCOGS_API_KEY, UPLOAD_USER and UPLOAD_PASSWORD are required.
 6. `npm start`
+
+## Installation (Production)
+
+1. Install [Docker CE](https://docs.docker.com/install/).
+2. `docker run --publish 8080:8080 --env UPLOAD_USER=<insert user> --env UPLOAD_PASSWORD=<insert password> --detach --name media raw1251am/media-server:latest`
+3. Visit server on port `8080`.
+
+The command will download and run the media server image with the following arguments:
+
+`--publish 8080:8080` will expose port 8080.
+
+`--env UPLOAD_USER=<insert user>` defines the media server upload endpoint user. Must be defined.
+
+`--env UPLOAD_PASSWORD=<insert password>` defines the media server upload endpoint password. Must be defined.
+
+`--detach` will run the container in the background.
+
+`--name media` will give the container a sensible name.
 
 ## Dynamic Endpoints
 
