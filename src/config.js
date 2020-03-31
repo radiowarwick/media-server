@@ -2,12 +2,26 @@
  * config.js - Defines the configuration of the media server through a series of constant definitions.
  */
 
+/**
+ * Define what environment variables must be set.
+ */
+const expected_env_vars = ["DISCOGS_API_KEY", "UPLOAD_USER", "UPLOAD_PASSWORD"];
+
+/**
+ * For each expected environment variable, check if it is set.
+ * If unset, throw an error reporting which environment variable must be set.
+ */
+expected_env_vars.forEach(env_var => {
+  if (!(env_var in process.env))
+    throw new Error("Environment variable " + env_var + " must be set.");
+});
+
 module.exports = {
   /**
    * Define some global constants which define required values for the server's function.
    * This includes API keys and resource upload user credentials.
    */
-  DISCOGS_API_KEY: process.env.DISCOGS_API_KEY || "",
+  DISCOGS_API_KEY: process.env.DISCOGS_API_KEY,
   PORT: process.env.PORT || 3000,
   UPLOAD: {
     USER: process.env.UPLOAD_USER,

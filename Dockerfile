@@ -17,7 +17,12 @@ RUN apt-get update -qq \
 # Copy entire bundle to the working directory
 COPY . .
 
-# Overrise and expose port 8080
+# Create a mount point marked as containing externally mounted volumes.
+# Prevents the container's size from increasing with the addition of more static media assets.
+# Can be overridden by binding a host directory at runtime.
+VOLUME /www/media/static
+
+# Override and expose port 8080
 ENV PORT 8080
 EXPOSE 8080
 
