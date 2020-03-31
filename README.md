@@ -17,20 +17,24 @@ A media server for all the many media resources at RAW 1251AM.
 ## Installation (Production)
 
 1. Install [Docker CE](https://docs.docker.com/install/).
-2. `docker run --publish 8080:8080 --env UPLOAD_USER=<insert user> --env UPLOAD_PASSWORD=<insert password> --detach --name media raw1251am/media-server:latest`
-3. Visit server on port `8080`.
+2. Run `docker volume create media-vol` to create a new persistent local volume to store our static assets. You only need to do this once per host.
+3. `docker run --detach --publish 8080:8080 --name media --mount source=media-vol,target=/www/media/static --env-file /path/to/.env raw1251am/media-server:latest`
+4. Visit server on port `8080`.
 
-The command will download and run the media server image with the following arguments:
-
-`--publish 8080:8080` will expose port 8080.
-
-`--env UPLOAD_USER=<insert user>` defines the media server upload endpoint user. Must be defined.
-
-`--env UPLOAD_PASSWORD=<insert password>` defines the media server upload endpoint password. Must be defined.
+The result is to download and run the media server image with a persistent storage volume with the following arguments:
 
 `--detach` will run the container in the background.
 
-`--name media` will give the container a sensible name.
+`--publish 8080:8080` will allow connections to port 8080 on the container.
+
+`--name media` gives the container a sensible name.
+
+`--mount source=media-vol,target=/www/media/static` mounts the media-vol volume to the static media directory.
+
+`--env-file /path/to/.env` points to a .env file on the host. The following must be set or the script will fail:
+
+- UPLOAD_USER
+- UPLOAD_PASSWORD
 
 ## Dynamic Endpoints
 

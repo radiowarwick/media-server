@@ -17,12 +17,8 @@ RUN apt-get update -qq \
 # Copy entire bundle to the working directory
 COPY . .
 
-# Define base enviroment
-ENV UPLOAD_USER user
-ENV UPLOAD_PASSWORD hackme
+# Overrise and expose port 8080
 ENV PORT 8080
-
-# Expose port 8080
 EXPOSE 8080
 
 # Start the server
