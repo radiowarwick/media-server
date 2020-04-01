@@ -17,12 +17,13 @@ RUN apt-get update -qq \
 # Copy entire bundle to the working directory
 COPY . .
 
-# Define base enviroment
-ENV UPLOAD_USER user
-ENV UPLOAD_PASSWORD hackme
-ENV PORT 8080
+# Create a mount point marked as containing externally mounted volumes.
+# Prevents the container's size from increasing with the addition of more static media assets.
+# Can be overridden by binding a host directory at runtime.
+VOLUME /www/media/static
 
-# Expose port 8080
+# Override and expose port 8080
+ENV PORT 8080
 EXPOSE 8080
 
 # Start the server

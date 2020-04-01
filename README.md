@@ -11,26 +11,30 @@ A media server for all the many media resources at RAW 1251AM.
    1. `sudo add-apt-repository --yes ppa:stebbins/handbrake-releases`
    2. `sudo apt-get update -qq`
    3. `sudo apt-get install -qq handbrake-cli`
-5. Define env variables. PORT, DISCOGS_API_KEY, UPLOAD_USER and UPLOAD_PASSWORD are required.
+5. Define env variables. DISCOGS_API_KEY, UPLOAD_USER and UPLOAD_PASSWORD are required. PORT is optional.
 6. `npm start`
 
 ## Installation (Production)
 
 1. Install [Docker CE](https://docs.docker.com/install/).
-2. `docker run --publish 8080:8080 --env UPLOAD_USER=<insert user> --env UPLOAD_PASSWORD=<insert password> --detach --name media raw1251am/media-server:latest`
+2. `docker run --detach --publish 8080:8080 --mount type=bind,source=/path/to/media/static,target=/www/media/static --env-file /path/to/.env --name media raw1251am/media-server:latest`
 3. Visit server on port `8080`.
 
-The command will download and run the media server image with the following arguments:
-
-`--publish 8080:8080` will expose port 8080.
-
-`--env UPLOAD_USER=<insert user>` defines the media server upload endpoint user. Must be defined.
-
-`--env UPLOAD_PASSWORD=<insert password>` defines the media server upload endpoint password. Must be defined.
+The result is to download and run the media server image with a persistent storage volume with the following arguments:
 
 `--detach` will run the container in the background.
 
-`--name media` will give the container a sensible name.
+`--publish 8080:8080` will allow connections to port 8080 on the container.
+
+`--mount type=bind,source=/path/to/media/static,target=/www/media/static` mounts the host's persistent static media directory to the container's static media directory.
+
+`--env-file /path/to/.env` points to a .env file on the host. The following must be set or the script will fail:
+
+- `UPLOAD_USER`
+- `UPLOAD_PASSWORD`
+- `DISCOGS_API_KEY`
+
+`--name media` gives the container a sensible name.
 
 ## Dynamic Endpoints
 
